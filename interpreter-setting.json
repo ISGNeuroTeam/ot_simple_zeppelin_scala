@@ -1,0 +1,149 @@
+[
+  {
+    "group": "otl",
+    "name": "otl",
+    "className": "com.isgneuro.zeppelinotl.OTLInterpreter",
+    "properties": {
+      "OTP.rest.host": {
+        "propertyName": "OTP.rest.host",
+        "defaultValue": "127.0.0.1",
+        "type": "textarea"
+      },
+      "OTP.rest.port": {
+        "propertyName": "OTP.rest.port",
+        "defaultValue": "50000",
+        "type": "textarea"
+      },
+      "OTP.rest.auth.username": {
+        "propertyName": "OTP.rest.auth.username",
+        "defaultValue": "admin",
+        "type": "textarea"
+      },
+      "OTP.rest.auth.password": {
+        "propertyName": "OTP.rest.auth.password",
+        "defaultValue": "12345678",
+        "type": "password"
+      },
+      "OTP.rest.cache.host": {
+        "propertyName": "OTP.rest.cache.host",
+        "defaultValue": "127.0.0.1",
+        "type": "textarea"
+      },
+      "OTP.rest.cache.port": {
+        "propertyName": "OTP.rest.cache.port",
+        "defaultValue": "80",
+        "type": "textarea"
+      },
+      "OTP.query.timeout": {
+        "propertyName": "OTP.query.timeout",
+        "defaultValue": "300",
+        "type": "textarea"
+      },
+      "OTP.query.ttl": {
+        "propertyName": "OTP.query.ttl",
+        "defaultValue": "60",
+        "type": "textarea"
+      },
+      "OTP.query.convertTime": {
+        "propertyName": "OTP.query.convertTime",
+        "defaultValue": "true",
+        "type": "textarea"
+      },
+      "OTP.query.maxResultRows": {
+        "propertyName": "OTP.query.maxResultRows",
+        "defaultValue": "10000",
+        "type": "textarea"
+      },
+      "spark.executor.memory": {
+        "envName": null,
+        "propertyName": "spark.executor.memory",
+        "defaultValue": "",
+        "description": "Executor memory per worker instance. ex) 512m, 32g",
+        "type": "string"
+      },
+      "args": {
+        "envName": null,
+        "propertyName": null,
+        "defaultValue": "",
+        "description": "spark commandline args",
+        "type": "textarea"
+      },
+      "zeppelin.spark.useHiveContext": {
+        "envName": "ZEPPELIN_SPARK_USEHIVECONTEXT",
+        "propertyName": "zeppelin.spark.useHiveContext",
+        "defaultValue": true,
+        "description": "Use HiveContext instead of SQLContext if it is true.",
+        "type": "checkbox"
+      },
+      "spark.app.name": {
+        "envName": "SPARK_APP_NAME",
+        "propertyName": "spark.app.name",
+        "defaultValue": "Zeppelin",
+        "description": "The name of spark application.",
+        "type": "string"
+      },
+      "zeppelin.spark.printREPLOutput": {
+        "envName": null,
+        "propertyName": "zeppelin.spark.printREPLOutput",
+        "defaultValue": true,
+        "description": "Print REPL output",
+        "type": "checkbox"
+      },
+      "spark.cores.max": {
+        "envName": null,
+        "propertyName": "spark.cores.max",
+        "defaultValue": "",
+        "description": "Total number of cores to use. Empty value uses all available core.",
+        "type": "number"
+      },
+      "zeppelin.spark.maxResult": {
+        "envName": "ZEPPELIN_SPARK_MAXRESULT",
+        "propertyName": "zeppelin.spark.maxResult",
+        "defaultValue": "1000",
+        "description": "Max number of Spark SQL result to display.",
+        "type": "number"
+      },
+      "master": {
+        "envName": "MASTER",
+        "propertyName": "spark.master",
+        "defaultValue": "local[*]",
+        "description": "Spark master uri. ex) spark://masterhost:7077",
+        "type": "string"
+      },
+      "zeppelin.spark.enableSupportedVersionCheck": {
+        "envName": null,
+        "propertyName": "zeppelin.spark.enableSupportedVersionCheck",
+        "defaultValue": true,
+        "description": "Do not change - developer only setting, not for production use",
+        "type": "checkbox"
+      },
+      "zeppelin.spark.uiWebUrl": {
+        "envName": null,
+        "propertyName": "zeppelin.spark.uiWebUrl",
+        "defaultValue": "",
+        "description": "Override Spark UI default URL",
+        "type": "string"
+      },
+      "zeppelin.spark.useNew": {
+        "envName": null,
+        "propertyName": "zeppelin.spark.useNew",
+        "defaultValue": true,
+        "description": "Whether use new spark interpreter implementation",
+        "type": "checkbox"
+      },
+      "zeppelin.spark.ui.hidden": {
+        "envName": null,
+        "propertyName": "zeppelin.spark.ui.hidden",
+        "defaultValue": false,
+        "description": "Whether to hide spark ui in zeppelin ui",
+        "type": "checkbox"
+      }
+    },
+    "editor": {
+      "language": "scala",
+      "editOnDblClick": false,
+      "completionKey": "TAB",
+      "completionSupport": true
+    }
+  }
+] 
