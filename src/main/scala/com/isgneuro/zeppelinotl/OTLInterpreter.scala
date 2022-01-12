@@ -100,5 +100,3 @@ class OTLInterpreter(properties: Properties) extends Interpreter(properties) {
     headers + "\n" + values
   }
 }
-
-case class Result(interpreterResult: InterpreterResult, dataset: Option[Dataset])
