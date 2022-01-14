@@ -2,17 +2,17 @@ package com.isgneuro.zeppelinotl
 
 import java.util.Properties
 import org.apache.zeppelin.interpreter.InterpreterContext
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{ FlatSpec, Matchers }
 import com.isgneuro.otp.connector.Connector
 import com.isgneuro.otp.connector.utils.Core.ConnectionInfo
 
 class OTLInterpreterTest extends FlatSpec with Matchers {
   val propertiesMap: Map[String, String] = Map(
-    "OTP.rest.host" -> "192.168.4.184",
-    "OTP.rest.port" -> "50000",
+    "OTP.rest.host" -> "192.168.4.65",
+    "OTP.rest.port" -> "80",
     "OTP.rest.auth.username" -> "admin",
     "OTP.rest.auth.password" -> "12345678",
-    "OTP.rest.cache.host" -> "192.168.4.184",
+    "OTP.rest.cache.host" -> "192.168.4.65",
     "OTP.rest.cache.port" -> "80",
     "OTP.query.timeout" -> "60",
     "OTP.query.ttl" -> "60")
@@ -35,19 +35,19 @@ class OTLInterpreterTest extends FlatSpec with Matchers {
   }
 
   it should "convert 'earliest' and 'latest' to unix time" in {
-    val query = "| getdata object=devices_h earliest=2019/01/01:0:0:0 latest=2020/01/01:0:0:0 | stats min(_time) as mint"
-    val expected = "| getdata object=devices_h earliest=1546290000 latest=1577826000 | stats min(_time) as mint"
+    val query = "| getdata object=devices_h  earliest =  2019/01/01:0:0:0 latest= 2020/01/01:0:0:0 | stats min(_time) as mint"
+    val expected = "| getdata object=devices_h  earliest =  1546290000 latest= 1577826000 | stats min(_time) as mint"
     Query(query).convertTimeRange.query should be(expected)
   }
 
   it should "not convert 'earliest' and 'latest' to unix time if they are not in the first command" in {
-    val query = """makeresults | eval f1 = "earliest=2019/01/01:0:0:0" | eval f2 = "latest=2020/01/01:0:0:0" """
+    val query = """makeresults | eval f1 = "earliest = 2019/01/01:0:0:0" | eval f2 = "latest=2020/01/01:0:0:0" """
     val expected = query
     Query(query).convertTimeRange.query should be(expected)
   }
 
   it should "extract time range from query if specified" in {
-    val query = "| getdata object=devices_h earliest=2019/01/01:0:0:0 latest=2020/01/01:0:0:0 | stats min(_time) as mint"
+    val query = "| getdata object=devices_h  earliest = 2019/01/01:0:0:0  latest  =2020/01/01:0:0:0 | stats min(_time) as mint"
     Query(query).earliest should be(1546290000)
     Query(query).latest should be(1577826000)
   }
@@ -120,7 +120,7 @@ class OTLInterpreterTest extends FlatSpec with Matchers {
   }
 
   it should "extract cache ID from query" in {
-    val query = "| makeresults | zput id=test123 | eval a=1"
+    val query = "| makeresults | zput  id  =  test123  | eval a=1"
     val cleanedQuery = Query(query).getCacheId
     cleanedQuery.query should be("| makeresults | eval a=1")
     cleanedQuery.cacheId should be('defined)
@@ -135,7 +135,7 @@ class OTLInterpreterTest extends FlatSpec with Matchers {
   }
 
   it should "put dataset to cache if cacheId specified in query" in {
-    val query = "| makeresults count=2 | eval a=1 | fields a | zput id=test1"
+    val query = "| makeresults count=2 | eval a=1 | fields a | zput  id =      test1"
     val ctxRP = InterpreterContextHelper.setResourcePool(ctx)
     val interp = new OTLInterpreter(properties)
     val _ = interp.interpret(query, ctxRP)
@@ -144,15 +144,15 @@ class OTLInterpreterTest extends FlatSpec with Matchers {
   }
 
   it should "get tokens' values from resource pool and put them into query" in {
-    val query = "| makeresults count=$count$ | eval x=1 | fields x"
+    val query = "| makeresults  count = $count$ | eval x=1 | fields x"
     val ctxRP = InterpreterContextHelper.setResourcePool(ctx)
     ctxRP.getResourcePool.put("count", "2")
-    val expected = "| makeresults count=2 | eval x=1 | fields x"
+    val expected = "| makeresults  count = 2 | eval x=1 | fields x"
     Query(query).setTokens(ctxRP.getResourcePool).query should be(expected)
   }
 
   it should "execute corrected query with tokens' values from resource pool" in {
-    val query = "| makeresults count=$count$ | eval x=1 | fields x"
+    val query = "| makeresults  count =  $count$ | eval x=1 | fields x"
     val ctxRP = InterpreterContextHelper.setResourcePool(ctx)
     ctxRP.getResourcePool.put("count", "2")
     val interp = new OTLInterpreter(properties)
@@ -173,7 +173,7 @@ class OTLInterpreterTest extends FlatSpec with Matchers {
   }
 
   it should "return a message if resulting dataset is empty" in {
-    val query = "| makeresults count=3 | eval a = 1 | search a<0 "
+    val query = "| makeresults count =3 | eval a = 1 | search a<0 "
     val interp = new OTLInterpreter(properties)
     val res = interp.interpret(query, ctx)
     res.code().toString should be("SUCCESS")

@@ -4,7 +4,7 @@ import com.isgneuro.otp.connector.utils.Datetime.getCurrentTime
 import org.apache.zeppelin.resource.ResourcePool
 
 import java.text.SimpleDateFormat
-import scala.util.{Failure, Success, Try}
+import scala.util.{ Failure, Success, Try }
 
 case class Query(query: String, cacheId: Option[String]) {
 
@@ -37,7 +37,7 @@ case class Query(query: String, cacheId: Option[String]) {
    * @return - New query with no 'zput' command and specified cacheId
    */
   def getCacheId: Query = {
-    """(\|\s*zput\s+id=(.*?))(\||$)""".r.findAllIn(query.trim)
+    """(\|\s*zput\s+id\s*=\s*(.*?))(\||$)""".r.findAllIn(query.trim)
       .matchData
       .flatMap(x => List(x.group(0), x.group(1), x.group(2)))
       .toList match {
