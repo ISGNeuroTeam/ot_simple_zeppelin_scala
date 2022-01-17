@@ -1,6 +1,6 @@
 name := "ot_simple_zeppelin_scala"
 description := "OTL interpreter for Apache Zeppelin"
-version := "0.1.0"
+version := "1.0.0"
 scalaVersion := "2.11.12"
 crossPaths := false
 
@@ -18,12 +18,12 @@ resolvers +=
 val dependencies = new {
  private val zeppelinVersion = "0.8.2"
  private val json4sVersion = "3.5.5"
- private val otScalarestVersion = "0.1.0"
+ private val otSimpleConnectorScalaVersion = "1.0.0"
  private val scalatestVersion = "3.0.8"
 
  val zeppelin = "org.apache.zeppelin" % "zeppelin-interpreter" % zeppelinVersion % Compile
  val json4s = "org.json4s" %% "json4s-native" % json4sVersion % Compile
- val connectorScala = "com.isgneuro" % "ot_simple_connector_scala" % otScalarestVersion % Compile
+ val connectorScala = "com.isgneuro" % "ot_simple_connector_scala" % otSimpleConnectorScalaVersion % Compile
  val scalatest = "org.scalatest" %% "scalatest" % scalatestVersion % Test
 }
 
