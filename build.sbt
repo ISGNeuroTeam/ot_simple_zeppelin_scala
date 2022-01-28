@@ -1,6 +1,6 @@
 name := "ot_simple_zeppelin_scala"
 description := "OTL interpreter for Apache Zeppelin"
-version := "1.0.0"
+version := "1.0.1"
 scalaVersion := "2.11.12"
 crossPaths := false
 
