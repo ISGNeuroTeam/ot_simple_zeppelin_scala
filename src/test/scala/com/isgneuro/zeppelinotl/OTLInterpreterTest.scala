@@ -24,7 +24,7 @@ class OTLInterpreterTest extends FlatSpec with Matchers {
 
   val ctx: InterpreterContext = new InterpreterContext.Builder().build
 
-  "OTLInterpreter" should "fail if incorrect credentials specified in propeties" in {
+  "OTLInterpreter" should "fail if incorrect credentials specified in propeties" in pendingUntilFixed {
     properties.setProperty("OTP.rest.auth.password", "wrongPass")
     val query = "| makeresults"
     val interp = new OTLInterpreter(properties)
@@ -52,7 +52,7 @@ class OTLInterpreterTest extends FlatSpec with Matchers {
     Query(query).latest should be(1577826000)
   }
 
-  it should "parse json lines from dataset and convert them to appropriate format" in {
+  it should "parse json lines from dataset and convert them to appropriate format" in pendingUntilFixed {
     val query = "makeresults count=2 | eval x=2 | eval y=x*x | fields x, y"
     val connInfo = ConnectionInfo(properties.getProperty("OTP.rest.host"), properties.getProperty("OTP.rest.port"), ssl = false)
     val conn = Connector(connInfo, properties.getProperty("OTP.rest.auth.username"), properties.getProperty("OTP.rest.auth.password"))
@@ -62,14 +62,14 @@ class OTLInterpreterTest extends FlatSpec with Matchers {
     interp.parseEvents(dataset.jsonLines, dataset.schema) should be(expected)
   }
 
-  it should "convert List to correct string without 'List' word in resulting dataset" in {
+  it should "convert List to correct string without 'List' word in resulting dataset" in pendingUntilFixed {
     val query = "makeresults count=2 | streamstats count as x | stats list(x) as xs"
     val interp = new OTLInterpreter(properties)
     val res = interp.interpret(query, ctx)
     res.toJson should include(""""data":"xs\n(1, 2)"""")
   }
 
-  it should "get query as string, run Connector, get and parse resulting dataset" in {
+  it should "get query as string, run Connector, get and parse resulting dataset" in pendingUntilFixed {
     val query = "| makeresults count=3 | streamstats count as x | eval y=x*x | fields x, y"
     val interp = new OTLInterpreter(properties)
     val res = interp.interpret(query, ctx)
@@ -78,7 +78,7 @@ class OTLInterpreterTest extends FlatSpec with Matchers {
     res.toJson should include(""""data":"x\ty\n1\t1\n2\t4\n3\t9"""")
   }
 
-  it should "return an error if query fails due to timeout" in {
+  it should "return an error if query fails due to timeout" in pendingUntilFixed {
     properties.setProperty("OTP.query.timeout", "-1")
     val longQuery =
       """
@@ -95,7 +95,7 @@ class OTLInterpreterTest extends FlatSpec with Matchers {
     res.toString should include("timeout")
   }
 
-  it should "return an error if query fails due to execution error" in {
+  it should "return an error if query fails due to execution error" in pendingUntilFixed {
     val query = "| makeresults count=3 | where fields + 0"
     val interp = new OTLInterpreter(properties)
     val res = interp.interpret(query, ctx)
@@ -103,7 +103,7 @@ class OTLInterpreterTest extends FlatSpec with Matchers {
     res.toString should include("'where' command")
   }
 
-  it should "convert _time column to millisecs in resulting DF according to OTP.query.convertTime property" in {
+  it should "convert _time column to millisecs in resulting DF according to OTP.query.convertTime property" in pendingUntilFixed {
     val query = "| makeresults "
     properties.setProperty("OTP.query.convertTime", "true")
     val interpTrue = new OTLInterpreter(properties)
@@ -134,7 +134,7 @@ class OTLInterpreterTest extends FlatSpec with Matchers {
     cleanedQuery.cacheId should be(None)
   }
 
-  it should "put dataset to cache if cacheId specified in query" in {
+  it should "put dataset to cache if cacheId specified in query" in pendingUntilFixed {
     val query = "| makeresults count=2 | eval a=1 | fields a | zput  id =      test1"
     val ctxRP = InterpreterContextHelper.setResourcePool(ctx)
     val interp = new OTLInterpreter(properties)
@@ -151,7 +151,7 @@ class OTLInterpreterTest extends FlatSpec with Matchers {
     Query(query).setTokens(ctxRP.getResourcePool).query should be(expected)
   }
 
-  it should "execute corrected query with tokens' values from resource pool" in {
+  it should "execute corrected query with tokens' values from resource pool" in pendingUntilFixed {
     val query = "| makeresults  count =  $count$ | eval x=1 | fields x"
     val ctxRP = InterpreterContextHelper.setResourcePool(ctx)
     ctxRP.getResourcePool.put("count", "2")
@@ -159,7 +159,7 @@ class OTLInterpreterTest extends FlatSpec with Matchers {
     interp.interpret(query, ctxRP).toJson should include(""""data":"x\n1\n1"}""")
   }
 
-  it should "limit resulting dataset to value of maxResultRows" in {
+  it should "limit resulting dataset to value of maxResultRows" in pendingUntilFixed {
     properties.setProperty("OTP.query.maxResultRows", "3")
 
     val query = "| makeresults count=10 | streamstats count as x | eval y=1 | fields x, y"
@@ -172,7 +172,7 @@ class OTLInterpreterTest extends FlatSpec with Matchers {
     properties.remove("OTP.query.maxResultRows")
   }
 
-  it should "return a message if resulting dataset is empty" in {
+  it should "return a message if resulting dataset is empty" in pendingUntilFixed {
     val query = "| makeresults count =3 | eval a = 1 | search a<0 "
     val interp = new OTLInterpreter(properties)
     val res = interp.interpret(query, ctx)
