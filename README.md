@@ -3,6 +3,12 @@
 ![1.0.0](https://img.shields.io/badge/version-1.0.0-brightgreen) ![date](https://img.shields.io/badge/release--date-17%20Jan%202022-brightgreen)
 
 This is an OTL interpreter for Apache Zeppelin. This interpreter works in tandem with OT Simple Rest and Apache Spark backend. REST Server collects OTL queries and converts them into Spark SQL queries with full support of all features of [SuperDispatcher](https://github.com/ISGNeuro/dispatcher).
+## Prerequisites
+
+- Java 1.8.1
+- Sbt 1.3.8
+- Scala 2.11.12
+- ot_simple_connector_scala 1.0.0
 
 ## Installation
 
@@ -62,61 +68,6 @@ Result:
 +----------+---+-------+
 ```
 
-#### Time range
-
-You can specify time range as `earliest` and `latest` params in the first command of query. Interpreter supports unix-time and "YYYY-MM-DD:HH:mm:ss" formats in `earliest` and `latest`. Time range will be extracted and passed as 'tws' and 'twf' properties of request to REST.
-
-![OTL in Zeppelin example](img-example-timestamp.png)
-
-Time range affects only on data from indexes, not from external storage.
-
-#### Put results to resource pool
-
-You can put the resulting dataset into resource pool and then get it within another cell.
-
-1. Put dataset to resource pool with id "debit".
-
-Query:
-```
-%otl
-| __read__ path=omds_well_adku
-| search wellNum=13
-| timechart span=1d mean(adkuLiquidDebit) as liquid, mean(adkuOilDebit) as oil
-| fields - 0
-| zput id=debit
-```
-Result:
-```
-+----------+------+-----+
-|     _time|liquid|  oil|
-+----------+------+-----+
-|1572566400| 108.5| 92.0|
-|1572739200| 108.0| 92.0|
-|1573084800| 117.0|100.0|
-| ........ | .... | ... |
-|1574121600| 101.0| 85.5|
-+----------+------+-----+
-```
-
-2. Get dataset from resource pool and calculate a correlation using spark functions:
-
-Scala cell:
-```scala
-%spark
-import org.apache.spark.sql.functions._
-val cacheDS = z.get("debit").toString
-val df = spark.read.json(Seq(cacheDS).toDS)
-df.agg(corr("liquid", "oil").alias("correlation")).show
-```
-Result:
-```
-+------------------+
-|       correlation|
-+------------------+
-|0.9260465713746013|
-+------------------+
-```
-
 #### Form templates
 
 You can use Zeppelin templates in OTL query to create form inputs.
@@ -129,7 +80,7 @@ Query:
 | fields - 0
 ```
 
-![Form templates](img-templates.png)
+![Form templates](docs/img-templates.png)
 
 #### Tokens in query
 

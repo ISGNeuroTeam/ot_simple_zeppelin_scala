@@ -1,6 +1,6 @@
 name := "ot_simple_zeppelin_scala"
 description := "OTL interpreter for Apache Zeppelin"
-version := "1.0.2"
+version := "1.1.0"
 scalaVersion := "2.11.12"
 crossPaths := false
 
@@ -12,7 +12,7 @@ credentials += Credentials(
 )
 
 resolvers +=
-  ("Sonatype OSS Snapshots" at "http://s.dev.isgneuro.com/repository/ot.platform-sbt-releases/")
+  ("Sonatype OSS Snapshots" at "http://storage.dev.isgneuro.com/repository/ot.platform-sbt-releases/")
     .withAllowInsecureProtocol(true)
 
 val dependencies = new {
