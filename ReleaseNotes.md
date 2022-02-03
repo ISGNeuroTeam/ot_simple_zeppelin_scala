@@ -1,4 +1,4 @@
-# [Unreleased] - Cut work with functions earliest, latest
+# [1.1.0] - Remove **earliest**, **latest** functions
 ### Changed
 - project structure
 - some tests
