@@ -12,7 +12,7 @@ credentials += Credentials(
 )
 
 resolvers +=
-  ("Sonatype OSS Snapshots" at "http://s.dev.isgneuro.com/repository/ot.platform-sbt-releases/")
+  ("Sonatype OSS Snapshots" at "http://storage.dev.isgneuro.com/repository/ot.platform-sbt-releases/")
     .withAllowInsecureProtocol(true)
 
 val dependencies = new {
