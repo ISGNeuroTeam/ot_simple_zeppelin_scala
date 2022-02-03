@@ -1,8 +1,8 @@
 # [Unreleased] - Cut work with functions earliest, latest
-#Changed
+### Changed
 - project structure
 - some tests
-#Removed
+### Removed
 - **earliest**, **latest** functions support
 
 # [1.0.0] - Refactor and functional change
