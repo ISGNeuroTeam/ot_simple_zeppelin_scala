@@ -66,7 +66,7 @@ Result:
 
 You can specify time range as `earliest` and `latest` params in the first command of query. Interpreter supports unix-time and "YYYY-MM-DD:HH:mm:ss" formats in `earliest` and `latest`. Time range will be extracted and passed as 'tws' and 'twf' properties of request to REST.
 
-![OTL in Zeppelin example](img-example-timestamp.png)
+![OTL in Zeppelin example](docs/img-example-timestamp.png)
 
 Time range affects only on data from indexes, not from external storage.
 
@@ -129,7 +129,7 @@ Query:
 | fields - 0
 ```
 
-![Form templates](img-templates.png)
+![Form templates](docs/img-templates.png)
 
 #### Tokens in query
 

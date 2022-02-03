@@ -24,8 +24,7 @@ class OTLInterpreter(properties: Properties) extends Interpreter(properties) {
   val convertTsToMillis: Boolean = Try(properties.getProperty("OTP.query.convertTime").toBoolean).getOrElse(true)
   val maxResultRows: Int = Try(properties.getProperty("OTP.query.maxResultRows").toInt).getOrElse(Int.MaxValue)
 
-  val connectionInfoOption: Option[ConnectionInfo] = if (port.isDefined && host.isDefined)
-    Some(ConnectionInfo(host.get, port.get, ssl = false)) else None
+  //val connectionInfoOption: Option[ConnectionInfo] = if (port.isDefined && host.isDefined) Some(ConnectionInfo(host.get, port.get, ssl = false)) else None
   val sid: Int = getCurrentTime
 
   override def open(): Unit = {}
@@ -33,62 +32,27 @@ class OTLInterpreter(properties: Properties) extends Interpreter(properties) {
   override def close(): Unit = {}
 
   override def interpret(s: String, interpreterContext: InterpreterContext): InterpreterResult = {
-
-    connectionInfoOption match {
-      case Some(connectionInfo: ConnectionInfo) =>
-        val query = Try {
-          Query(s)
-            .setTokens(interpreterContext.getResourcePool)
-            .getCacheId
-            .convertTimeRange
-        }
-
-        val dataset = Try {
-          if (username.isDefined && password.isDefined) {
-            val conn = Connector(connectionInfo, username.get, password.get)
-            if (query.isSuccess) {
-              val tws = query.get.earliest
-              val twf = query.get.latest
-              conn.jobs.create(query.get.query, ttl, tws, twf, sid, timeout).getDataset(datasetHost.getOrElse(connectionInfo.host), datasetPort)
-            } else throw new Exception(
-              s"""Error while converting query (setting tokens from resource pool,
-                |converting time range, parsing zput command) : ${
-                query match { case Failure(ex) => ex.getMessage }
-              }""".stripMargin)
-          } else throw new Exception(
-            {
-              if (username.isEmpty) "Please specify OTP.rest.auth.username in interpreter properties"
-              else "Please specify OTP.rest.auth.password in interpreter properties"
-            })
-        }
-
-        val result: Result = dataset match {
-          case Success(ds) if ds.jsonLines.exists(_.nonEmpty) =>
-            val nonEmptyDS: String = parseEvents(ds.jsonLines.take(maxResultRows), ds.schema)
-            val ir = new InterpreterResult(Code.SUCCESS, Type.TABLE, nonEmptyDS)
-            Result(ir, Some(ds))
-          case Success(emptyDS) =>
-            val ir = new InterpreterResult(Code.SUCCESS, Type.TEXT, "Resulting dataset is empty")
-            Result(ir, Some(emptyDS))
-          case Failure(ex) => Result(new InterpreterResult(Code.ERROR, Type.TEXT, ex.getMessage), None)
-        }
-
-        if (query.isSuccess)
-          query.get.cacheId.foreach(cid =>
-            result.dataset.map(ds =>
-              interpreterContext.getResourcePool.put(cid, "[" + ds.jsonLines.mkString(", ") + "]")))
-
-        result.interpreterResult
-
-      case None => new InterpreterResult(
-        Code.ERROR,
-        Type.TEXT,
-        {
-          if (host.isEmpty) "Please specify OTP.rest.host in interpreter properties"
-          else "Please specify OTP.rest.port in interpreter properties"
-        })
+    if (host.isDefined && port.isDefined && username.isDefined && password.isDefined) {
+      val connectionInfo = ConnectionInfo(host.get, port.get, ssl = false)
+      Try(Query(s).setTokens(interpreterContext.getResourcePool)) flatMap {
+        query =>
+          Try(Connector(connectionInfo, username.get, password.get)) flatMap {
+            connector => Try(connector.jobs.create(query.query, ttl, 0, 0, sid, timeout).getDataset(datasetHost.getOrElse(connectionInfo.host), datasetPort))
+          }
+      } flatMap {
+        dataset =>
+          if (dataset.jsonLines.exists(_.nonEmpty)) Try(parseEvents(dataset.jsonLines.take(maxResultRows), dataset.schema)) else Success("")
+      } match {
+        case Success(interpretResult) => if (interpretResult.isEmpty) new InterpreterResult(Code.SUCCESS, Type.TEXT, "Resulting dataset is empty")
+        else new InterpreterResult(Code.SUCCESS, Type.TABLE, interpretResult)
+        case Failure(exception) => new InterpreterResult(Code.ERROR, Type.TEXT, s"""Caught exception '${exception.getMessage}' while interpreting""")
+      }
+    } else {
+      new InterpreterResult(Code.ERROR, Type.TEXT,
+        s"""Some interpreter parameters are not specified. Please specify 'OTP.rest.host',
+           |'OTP.rest.port', 'OTP.rest.auth.username', 'OTP.rest.auth.password' in interpreter properties.
+           |""".stripMargin)
     }
-
   }
 
   override def cancel(interpreterContext: InterpreterContext): Unit = {}
