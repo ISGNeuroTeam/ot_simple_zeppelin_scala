@@ -1,8 +1,9 @@
 package com.isgneuro.zeppelinotl
 
-import com.isgneuro.otp.connector.utils.Core.ConnectionInfo
+import com.isgneuro.otp.connector.Core.{ ConnectionInfo, Dataset }
+import com.isgneuro.otp.connector.Core.{ ConnectionInfo, Dataset }
 import com.isgneuro.otp.connector.utils.Datetime.{ convertTimeToMillis, getCurrentTime }
-import com.isgneuro.otp.connector.{ Connector, Dataset }
+import com.isgneuro.otp.connector.Connector
 import org.apache.zeppelin.interpreter.Interpreter.FormType
 import org.apache.zeppelin.interpreter.InterpreterResult.{ Code, Type }
 import org.apache.zeppelin.interpreter.{ Interpreter, InterpreterContext, InterpreterResult }
@@ -24,21 +25,23 @@ class OTLInterpreter(properties: Properties) extends Interpreter(properties) {
   val convertTsToMillis: Boolean = Try(properties.getProperty("OTP.query.convertTime").toBoolean).getOrElse(true)
   val maxResultRows: Int = Try(properties.getProperty("OTP.query.maxResultRows").toInt).getOrElse(Int.MaxValue)
 
-  //val connectionInfoOption: Option[ConnectionInfo] = if (port.isDefined && host.isDefined) Some(ConnectionInfo(host.get, port.get, ssl = false)) else None
   val sid: Int = getCurrentTime
 
   override def open(): Unit = {}
 
   override def close(): Unit = {}
 
+  def createJobAndReturnDataset(query: String, connectionInfo: ConnectionInfo, username: String, password: String): Try[Dataset] = {
+    Try(Connector(connectionInfo, username, password)) flatMap {
+      connector => Try(connector.jobs.create(query, ttl, 0, 0, sid, timeout).getDataset(datasetHost.getOrElse(connectionInfo.host), datasetPort))
+    }
+  }
+
   override def interpret(s: String, interpreterContext: InterpreterContext): InterpreterResult = {
     if (host.isDefined && port.isDefined && username.isDefined && password.isDefined) {
       val connectionInfo = ConnectionInfo(host.get, port.get, ssl = false)
       Try(Query(s).setTokens(interpreterContext.getResourcePool)) flatMap {
-        query =>
-          Try(Connector(connectionInfo, username.get, password.get)) flatMap {
-            connector => Try(connector.jobs.create(query.query, ttl, 0, 0, sid, timeout).getDataset(datasetHost.getOrElse(connectionInfo.host), datasetPort))
-          }
+        query => createJobAndReturnDataset(query.query, connectionInfo, username.get, password.get)
       } flatMap {
         dataset =>
           if (dataset.jsonLines.exists(_.nonEmpty)) Try(parseEvents(dataset.jsonLines.take(maxResultRows), dataset.schema)) else Success("")

@@ -8,7 +8,7 @@ This is an OTL interpreter for Apache Zeppelin. This interpreter works in tandem
 - Java 1.8.1
 - Sbt 1.3.8
 - Scala 2.11.12
-- ot_simple_connector_scala 1.0.0
+- ot_simple_connector_scala 1.1.0
 
 ## Installation
 
