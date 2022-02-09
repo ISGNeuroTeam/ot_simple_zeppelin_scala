@@ -33,6 +33,9 @@ libraryDependencies ++= Seq(
  dependencies.connectorScala,
  dependencies.scalatest
 )
+libraryDependencies += "org.slf4j" % "slf4j-api" % "1.7.30"
+libraryDependencies += "org.slf4j" % "slf4j-simple" % "1.7.30" % Test
+
 
 Test / parallelExecution := false
 
