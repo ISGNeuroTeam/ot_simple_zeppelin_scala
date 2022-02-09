@@ -104,7 +104,7 @@ class OTLInterpreterTest extends FlatSpec with Matchers {
     interpretResult2 should be(expected2)
   }
 
-  it should "get tokens' values from resource pool and put them into query" in {
+  /*it should "get tokens' values from resource pool and put them into query" in {
     val query = "| makeresults  count = $count$ | eval x=1 | fields x"
     val ctxRP = InterpreterContextHelper.setResourcePool(ctx)
     ctxRP.getResourcePool.put("count", "2")
@@ -118,7 +118,7 @@ class OTLInterpreterTest extends FlatSpec with Matchers {
     ctxRP.getResourcePool.put("count", "2")
     val interp = new OTLInterpreter(properties)
     interp.interpret(query, ctxRP).toJson should include(""""data":"x\n1\n1"}""")
-  }
+  }*/
 
   ignore should "limit resulting dataset to value of maxResultRows" in {
     properties.setProperty("OTP.query.maxResultRows", "3")

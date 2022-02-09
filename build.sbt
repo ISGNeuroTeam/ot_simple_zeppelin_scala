@@ -16,7 +16,7 @@ resolvers +=
     .withAllowInsecureProtocol(true)
 
 val dependencies = new {
- private val zeppelinVersion = "0.8.2"
+ private val zeppelinVersion = "0.10.0"
  private val json4sVersion = "3.5.5"
  private val otSimpleConnectorScalaVersion = "1.0.0"
  private val scalatestVersion = "3.0.8"
@@ -33,8 +33,7 @@ libraryDependencies ++= Seq(
  dependencies.connectorScala,
  dependencies.scalatest
 )
-libraryDependencies += "org.slf4j" % "slf4j-api" % "1.7.30"
-libraryDependencies += "org.slf4j" % "slf4j-simple" % "1.7.30" % Test
+
 
 
 Test / parallelExecution := false
