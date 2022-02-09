@@ -16,7 +16,7 @@ resolvers +=
     .withAllowInsecureProtocol(true)
 
 val dependencies = new {
- private val zeppelinVersion = "0.8.2"
+ private val zeppelinVersion = "0.10.0"
  private val json4sVersion = "3.5.5"
  private val otSimpleConnectorScalaVersion = "1.1.0b"
  private val scalatestVersion = "3.0.8"
@@ -33,6 +33,8 @@ libraryDependencies ++= Seq(
  dependencies.connectorScala,
  dependencies.scalatest
 )
+
+
 
 Test / parallelExecution := false
 

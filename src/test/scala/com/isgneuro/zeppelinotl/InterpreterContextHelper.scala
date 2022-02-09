@@ -4,7 +4,7 @@ import org.apache.zeppelin.interpreter.InterpreterContext
 import org.apache.zeppelin.resource.{ LocalResourcePool, ResourcePool }
 
 object InterpreterContextHelper {
-  def setResourcePool(ctx: InterpreterContext, rp: ResourcePool): InterpreterContext = {
+  /*def setResourcePool(ctx: InterpreterContext, rp: ResourcePool): InterpreterContext = {
     new InterpreterContext(
       ctx.getNoteId,
       ctx.getParagraphId,
@@ -24,5 +24,5 @@ object InterpreterContextHelper {
   def setResourcePool(ctx: InterpreterContext): InterpreterContext = {
     val lrp = new LocalResourcePool("LocalResourcePool")
     setResourcePool(ctx, lrp)
-  }
+  }*/
 }
