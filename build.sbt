@@ -18,7 +18,7 @@ resolvers +=
 val dependencies = new {
  private val zeppelinVersion = "0.10.0"
  private val json4sVersion = "3.5.5"
- private val otSimpleConnectorScalaVersion = "1.1.0b"
+ private val otSimpleConnectorScalaVersion = "1.1.0"
  private val scalatestVersion = "3.0.8"
 
  val zeppelin = "org.apache.zeppelin" % "zeppelin-interpreter" % zeppelinVersion % Compile

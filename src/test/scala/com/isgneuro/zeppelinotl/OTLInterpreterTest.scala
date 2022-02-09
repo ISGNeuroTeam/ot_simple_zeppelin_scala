@@ -2,6 +2,7 @@ package com.isgneuro.zeppelinotl
 
 import java.util.Properties
 import org.apache.zeppelin.interpreter.InterpreterContext
+import org.apache.zeppelin.resource.LocalResourcePool
 import org.scalatest.{ FlatSpec, Matchers }
 
 class OTLInterpreterTest extends FlatSpec with Matchers {
@@ -113,25 +114,31 @@ class OTLInterpreterTest extends FlatSpec with Matchers {
   it should "get tokens' values from resource pool and put them into query" in {
     val query = "| makeresults  count = $count$ | eval x=1 | fields x"
 
-    val ctxRP = InterpreterContextHelper.setResourcePool(interpreterContext)
+    interpreterContext.setResourcePool(new LocalResourcePool("LocalResourcePool"))
+    interpreterContext.getResourcePool.put("count", "2")
+    //val ctxRP = InterpreterContextHelper.setResourcePool(interpreterContext)
 
-    ctxRP.getResourcePool.put("count", "2")
+    //ctxRP.getResourcePool.put("count", "2")
 
     val expected = "| makeresults  count = 2 | eval x=1 | fields x"
 
-    Query(query).setTokens(ctxRP.getResourcePool).query should be(expected)
+    Query(query).setTokens(interpreterContext.getResourcePool).query should be(expected)
+
+    interpreterContext.getResourcePool.remove("count")
   }
 
   it should "execute corrected query with tokens' values from resource pool" in {
 
-    val ctxRP = InterpreterContextHelper.setResourcePool(interpreterContext)
-    ctxRP.getResourcePool.put("count", "2")
+    interpreterContext.setResourcePool(new LocalResourcePool("LocalResourcePool"))
+    interpreterContext.getResourcePool.put("count", "2")
 
     val mockInterpreter = new OTLInterpreterMock(properties)
 
-    val result = mockInterpreter.interpret("| makeresults  count =  $count$ | eval x=1 | fields x", ctxRP)
+    val result = mockInterpreter.interpret("| makeresults  count =  $count$ | eval x=1 | fields x", interpreterContext)
 
     val expected = "%table x\n1\n1"
+
+    interpreterContext.getResourcePool.remove("count")
 
     result.toString should be(expected)
 
