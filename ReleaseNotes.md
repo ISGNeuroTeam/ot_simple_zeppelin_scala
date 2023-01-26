@@ -1,3 +1,7 @@
+# [1.2.1] 2023-01-26
+### Fixed
+- no time to explain
+
 # [1.2.0] - Improved tests, new version of zeppelin-interpreter
 ### Added
 - OTLInterpreterMock class
